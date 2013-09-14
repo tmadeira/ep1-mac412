@@ -34,6 +34,9 @@ int main (int argc, char *argv[]) {
 	int i, count;
 	int *array = (int*) malloc (SIZE * sizeof(int));
 	uint64_t start, end;
+    int events[3] = { PAPI_L1_DCM, PAPI_L2_DCM, PAPI_L3_DCM };
+    long long misses[3];
+    int papilevels = 3;
 
     if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
         exit(1);
@@ -47,6 +50,9 @@ int main (int argc, char *argv[]) {
 		array[i] = rand();
 
 	//Measurement
+    while (PAPI_start_counters(events, papilevels) != PAPI_OK) {
+        papilevels--;
+    }
 	start = get_time();
 	/*
 	 * É possível, em um vetor ordenado, fazer a contagem 
@@ -60,8 +66,15 @@ int main (int argc, char *argv[]) {
 			count++;
 	end = get_time();
 	uint64_t exec_time = diff_time(start, end);
+    if (PAPI_read_counters(misses, papilevels) != PAPI_OK) {
+        fprintf(stderr, "Erro em PAPI_read_counters\n");
+        exit(1);
+    }
 
 	printf("Time: %" PRIu64 " Count %d\n",  exec_time, count);
+    for (i = 0; i < papilevels; i++) {
+        printf("Cache misses (L%d): %lld\n", i+1, misses[i]);
+    }
 	free(array);
 	return 0;
 }
