@@ -16,13 +16,118 @@
 \tableofcontents
 \newpage
 
-\section{Introdução}
-
 \section{Parte 1}
+
+Pequena introdução % TODO
+
+\subsection{Instalando o PAPI}
+
+Iniciamos nosso trabalho baixando a biblioteca PAPI\footnote{http://icl.cs.utk.edu/papi/}, lendo seu arquivo {\tt README.txt} e seguindo algumas instruções sugeridas pelo arquivo para melhor entendermos o funcionamento da PAPI. Nesse processo, instalamos a biblioteca, acessamos a documentação do projeto e realizamos alguns testes. O sistema operacional que utilizamos foi o \textbf{Ubuntu Linux}\footnote{http://ubuntu.com/}
+
+Para compilar e instalar o PAPI, executamos:
+
+\begin{verbatim}
+$ ./configure --prefix=/usr
+$ make
+$ su
+# make install
+\end{verbatim}
+
+Alguns dos exemplos disponívels no diretório {\tt utils/} do projeto foram bastante importantes para entendermos a forma como a biblioteca funciona. Em particular, o utilitário {\tt utils/clockres.c} nos ajudou a entender como usar as funções para cronometrar tempos de execução reais e virtuais das operações tanto em ciclos e microssegundos.
+
+\subsection{Contando o tempo com o PAPI}
+
+Foram necessárias alterações muito pequenas para fazer o tempo ser cronometrado com o PAPI no lugar de {\tt gettimeofday()} nos arquivos {\tt teste1.c} e {\tt teste1\_ord.c}. Incluímos o cabeçalho {\tt papi.h} no código-fonte e a função {\tt get\_time()} foi modificada de sua versão original:
+
+\begin{verbatim}
+inline uint64_t get_time(void) {
+    struct timeval t1;
+    gettimeofday(&t1, NULL);
+    return 1000000L * t1.tv_sec + t1.tv_usec;
+}
+\end{verbatim}
+
+para:
+
+\begin{verbatim}
+inline uint64_t get_time(void) { 
+    return (uint64_t) PAPI_get_virt_cyc();
+}  
+\end{verbatim}
+
+A única outra necessidade foi adicionar uma chamada à função {\tt PAPI\_library\_init()} no início da função {\tt main()} para que a biblioteca fosse inicializada.
+
+A resolução da função {\tt PAPI\_get\_virt\_cyc()} é muito maior do que a da função {\tt gettimeofday()}:
+
+\begin{verbatim}
+$ ./teste1
+Time: 8171 Count 500527
+$ ./teste1_ord
+Time: 2671 Count 500527
+$ ./teste1-papi
+Time: 19567704 Count 500927
+$ ./teste1_ord-papi
+Time: 6495723 Count 500927
+\end{verbatim}
+
+\subsection{Hipóteses}
+
+Pequena introdução % TODO
+
+\subsubsection{Registradores}
+
+Um pouco sobre hipótese 1 % TODO
+
+\subsubsection{Contando número de falhas de cache}
+
+Bastante sobre essa hipótese, com códigos que usamos para contar cache misses % TODO
+
+\subsubsection{Outra hipótese}
+
+Outra hipótese vai aqui % TODO
 
 \section{Parte 2}
 
+Pequena introdução % TODO
+
+\subsection{Utilizando hwloc}
+
+Aceitamos a sugestão do enunciado do EP de usar \emph{hwloc}\footnote{http://www.open-mpi.org/software/hwloc/v1.7/} para obter os valores reais do tamanho do cache e da linha. Outras alternativas seriam ler {\tt /sys/devices/system/cpu/cpu*/*} ou ainda usar as rotinas que o PAPI no seu utilitário {\tt utils/mem\_info.c}, mas achamos interessante a promessa de um acréscimo na nota para quem usasse \emph{hwloc}.
+
+Instalamos o programa através do gerenciador de pacotes do Ubuntu ({\tt apt-get install hwloc libhwloc-dev}). Também baixamos o código para usar como referência. Lendo o manual, descobrimos como inicializar o \emph{hwloc} e como obter os tamanhos de cache e linha:
+
+\begin{verbatim}
+/* Inicializa hwloc */
+if (hwloc_topology_init(&topology)) {
+    fprintf(stderr, "Erro em hwloc_topology_init\n");
+    exit(1);
+}
+hwloc_topology_load(topology);
+
+/* Pega tamanhos reais de cache e line */
+level = 0;
+for (obj = hwloc_get_obj_by_type(topology, HWLOC_OBJ_PU, 0);
+        obj; obj = obj->parent) {
+    if (obj->type == HWLOC_OBJ_CACHE) {
+        real_cache[level] = obj->attr->cache.size;
+        real_line[level] = obj->attr->cache.linesize;
+        level++;
+    }
+}
+numlevels = level;
+\end{verbatim}
+
+\subsection{Utilizando contadores do PAPI}
+
+Havíamos aprendido a usar os contadores de hardware do PAPI na parte 1 do EP, quando formulamos a hipótese de que o programa {\tt teste1\_ord.c} seria mais rápido por causa do cache. Usamos aqui o mesmo código para contar o número de falhas de cache.
+
+\subsection{Estimando tamanho do cache e da fila}
+
+Aqui vai a parte difícil do EP % TODO
+
 \section{Conclusão}
+
+Aqui vai a conclusão % TODO
 
 \end{document}
 

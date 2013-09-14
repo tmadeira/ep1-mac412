@@ -16,7 +16,7 @@ int main() {
     int events[3] = { PAPI_L1_DCM, PAPI_L2_DCM, PAPI_L3_DCM };
     long long misses[3];
     int papilevels = 3;
-    
+
     /* Inicializa hwloc */
     if (hwloc_topology_init(&topology)) {
         fprintf(stderr, "Erro em hwloc_topology_init\n");
