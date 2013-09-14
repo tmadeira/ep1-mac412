@@ -1,44 +1,52 @@
 EP 1 de MAC412 (Organização de Computadores)
-15 de setembro de 2013
+============================================
 
-Ana Luísa Losnak (7240258)
+Ana Luísa Losnak (7240258) 
 Tiago Madeira (6920244)
 
-== PARTE 1 ==
+Parte 1
+-------
 
-O código da parte 1 se encontra na pasta parte-1/.
+O código da parte 1 se encontra na pasta `parte-1/`.
 
-[Como compilar]
-$ cd parte-1/
-$ make
+Como compilar:
 
-[Como rodar]
-$ ./teste1               # roda teste1.c como veio no enunciado
-$ ./teste1_ord           # roda teste1_ord.c como veio no enunciado
-$ ./teste1-papi          # roda teste1.c usando PAPI para contar ciclos no lugar de gettimeofday
-$ ./teste1_ord-papi      # roda teste1_ord.c usando PAPI para contar ciclos no lugar de gettimeofday
-$ make test              # roda todos os testes em sequencia
+    $ cd parte-1/
+    $ make
 
-[Requerimentos]
+Como rodar:
+
+    $ ./teste1               # roda teste1.c como veio no enunciado
+    $ ./teste1_ord           # roda teste1_ord.c como veio no enunciado
+    $ ./teste1-papi          # roda teste1.c usando PAPI para contar ciclos no lugar de gettimeofday
+    $ ./teste1_ord-papi      # roda teste1_ord.c usando PAPI para contar ciclos no lugar de gettimeofday
+    $ make test              # roda todos os testes em sequencia
+
+Requerimentos:
+
 - papi (http://icl.cs.utk.edu/papi/software/index.html)
 
-== PARTE 2 ==
+Parte 2
+-------
 
-O código da parte 2 se encontra na pasta parte-2/.
+O código da parte 2 se encontra na pasta `parte-2/`.
 
-[Como compilar]
-$ cd parte-2/
-$ make
+Como compilar:
 
-[Como rodar]
-$ ./parte-2
+    $ cd parte-2/
+    $ make
 
-[Requerimentos]
+Como rodar:
+
+    $ ./parte-2
+
+Requerimentos:
+
 - papi (http://icl.cs.utk.edu/papi/software/index.html)
-- hwloc (no Ubuntu: apt-get install hwloc libhwloc-dev)
+- hwloc (no Ubuntu: `apt-get install hwloc libhwloc-dev`)
 
-== MAIS INFORMAÇÕES ==
+Mais informações
+----------------
 
-Mais informações no relatório: relatorio.pdf
-    (em LaTeX: relatorio.tex)
+Mais informações no relatório: `relatorio.pdf` (em LaTeX: `relatorio.tex`)
 
