@@ -1,8 +1,8 @@
-EP 1 de MAC412 (Organização de Computadores)
-============================================
+EP 1 de MAC412
+==============
 
-Ana Luísa Losnak (7240258) 
-Tiago Madeira (6920244)
+- Ana Luísa Losnak (7240258)
+- Tiago Madeira (6920244)
 
 Parte 1
 -------
