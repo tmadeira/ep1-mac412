@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O0 -g
-LDLIBS=-lpapi
+LDLIBS=-lpapi -lhwloc
 
 all: parte-2
 

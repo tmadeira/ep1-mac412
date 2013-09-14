@@ -3,8 +3,7 @@
 #include <time.h>
 #include <inttypes.h>
 #include <sys/time.h>
-
-#include "papi.h"
+#include <papi.h>
 
 #define SIZE 1000000
 

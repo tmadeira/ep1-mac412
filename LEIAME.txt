@@ -19,9 +19,8 @@ $ ./teste1-papi          # roda teste1.c usando PAPI para contar ciclos no lugar
 $ ./teste1_ord-papi      # roda teste1_ord.c usando PAPI para contar ciclos no lugar de gettimeofday
 $ make test              # roda todos os testes em sequencia
 
-[Observações]
-Você precisa ter a biblioteca PAPI instalada para compilar e rodar os programas.
-Mais informações no relatório.
+[Requerimentos]
+- papi (http://icl.cs.utk.edu/papi/software/index.html)
 
 == PARTE 2 ==
 
@@ -34,7 +33,11 @@ $ make
 [Como rodar]
 $ ./parte-2
 
-[Observações]
-Você precisa ter a biblioteca PAPI instalada para compilar e rodar os programas.
+[Requerimentos]
+- papi (http://icl.cs.utk.edu/papi/software/index.html)
+- hwloc (no Ubuntu: apt-get install hwloc libhwloc-dev)
+
+== MAIS INFORMAÇÕES ==
+
 Mais informações no relatório.
 
