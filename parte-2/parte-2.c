@@ -3,7 +3,7 @@
 #include <hwloc.h>
 
 int main() {
-    int level, maxlevel;
+    int level, numlevels;
     hwloc_uint64_t cache[3];
     unsigned line[3];
     hwloc_topology_t topology;
@@ -24,15 +24,19 @@ int main() {
             level++;
         }
     }
-    maxlevel = maxlevel;
+    numlevels = level;
 
     /* Imprime tabela */
     printf("Nível Linha Real Cache Real Linha Est. Cache Est.\n");
     printf("----- ---------- ---------- ---------- ----------\n");
     for (level = 0; level < 3; level++) {
         printf("%5d ", level+1);
-        printf("%10u ", line[level]);
-        printf("%9lluK ", (unsigned long long) cache[level] / 1024);
+        if (level < numlevels) {
+            printf("%10u ", line[level]);
+            printf("%9lluK ", (unsigned long long) cache[level] / 1024);
+        } else {
+            printf("       N/D        N/D        N/D        N/D");
+        }
         printf("\n");
     }
     return 0;
