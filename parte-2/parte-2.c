@@ -48,13 +48,10 @@ int main() {
         exit(1);
     }
 
-    /* XXX */
-    printf("== DEBUG ==\n");
-    printf("L1 cache miss: %lld\n", misses[0]);
-    printf("L2 cache miss: %lld\n", misses[1]);
-    printf("L3 cache miss: %lld\n", misses[2]);
+    for (level = 0; level < papilevels; level++) {
+        printf("L%d cache miss: %lld\n", level+1, misses[level]);
+    }
     printf("\n");
-    /* /XXX */
 
     /* Imprime tabela */
     printf("Nível Linha Real Cache Real Linha Est. Cache Est.\n");
@@ -65,7 +62,7 @@ int main() {
             printf("%10u ", real_line[level]);
             printf("%9lluK ", (unsigned long long) real_cache[level] / 1024);
             if (level < papilevels) {
-                /* TODO: imprimir valores estimados */
+                /* TODO: imprimir valores estimados no lugar dos reais */
                 printf("%10u ", real_line[level]);
                 printf("%9lluK", (unsigned long long) real_cache[level] / 1024);
             } else {
