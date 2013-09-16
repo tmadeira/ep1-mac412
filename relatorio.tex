@@ -93,7 +93,7 @@ Outra hipótese vai aqui % TODO
 
 \section{Parte 2}
 
-A parte 2 do EP consiste em estimar o tamanho do cache bla bla bla % TODO
+A parte 2 do EP consiste em estimar o tamanho do cache e da linha baseado nos contadores de hardware que informam o número de falhas de cache.
 
 \subsection{Utilizando hwloc}
 
@@ -126,13 +126,43 @@ numlevels = level;
 
 Havíamos aprendido a usar os contadores de hardware do PAPI na parte 1 do EP, quando formulamos a hipótese de que o programa {\tt teste1\_ord.c} seria mais rápido por causa do cache. Usamos aqui o mesmo código para contar o número de falhas de cache.
 
-\subsection{Estimando tamanho do cache e da fila}
+Para inicializar os contadores:
 
-Aqui vai a parte difícil do EP % TODO
+\begin{verbatim}
+int events[3] = { PAPI_L1_DCM, PAPI_L2_DCM, PAPI_L3_DCM };
+long long misses[3];
+int papilevels = 3;
 
-\section{Conclusão}
+while (PAPI_start_counters(events, papilevels) != PAPI_OK) {
+    papilevels--;
+}
+\end{verbatim}
 
-Aqui vai a conclusão % TODO
+E para lê-los:
+
+\begin{verbatim}
+if (PAPI_read_counters(misses, papilevels) != PAPI_OK) {
+    fprintf(stderr, "Erro em PAPI_read_counters\n");
+    exit(1);
+}
+printf("L1 cache miss: %lld\n", misses[0]);
+printf("L2 cache miss: %lld\n", misses[1]);
+printf("L3 cache miss: %lld\n", misses[2]);
+\end{verbatim}
+
+\subsection{Estimando tamanho do cache e da linha}
+
+Não conseguimos fazer a parte do código para fazer a estimativa.
+
+\section{Conclusões}
+
+A enorme diferença de tempo de execução entre os programas {\tt teste1.c} e {\tt teste1\_ord.c} comprova empiricamente que, para além da complexidade dos algoritmos, a forma como o hardware funciona faz muita diferença na otimização dos programas.
+
+O uso de cache nos processadores para evitar acesso à memória RAM faz com que os programas rodem muito mais rápido do que rodariam se precisassem sempre acessar a memória.
+
+A biblioteca \emph{PAPI} pode ser uma ferramenta útil para detectarmos gargalos nas nossas implementações e entender em que hardware nossos códigos estão rodando.
+
+O utilitário \emph{hwloc} pode nos ajudar a ter mais ideia da topologia dos nossos computadores.
 
 \end{document}
 
