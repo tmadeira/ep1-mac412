@@ -20,11 +20,13 @@
 
 \section{Parte 1}
 
-Pequena introdução (o que é a parte 1) % TODO
+A parte 1 deste EP visa a instalação da biblioteca PAPI\footnote{http://icl.cs.utk.edu/papi/} e a familiarização ao uso de suas funcionalidades, bem como a análise e discussão sobre a diferença no tempo de execução de programas similares. 
+
+Após a instalação completa, descrita em mais detalhes abaixo, alteramos o contador de tempo dos programas disponíveis no enunciado por eventos da PAPI para maior resolução no resultado. Com esses novos programas, realizamos diversas experiências, analisando o tempo de execução destes programas e discutindo hipóteses para tal diferença. Por fim, avaliamos qual hipótese era a mais correta utilizando a biblioteca PAPI para contar diversos eventos do computador ao executar cada programa. A seguir descrevemos mais detalhadamente como foi feita a parte 1.
 
 \subsection{Instalando o PAPI}
 
-Iniciamos nosso trabalho baixando a biblioteca PAPI\footnote{http://icl.cs.utk.edu/papi/}, lendo seu arquivo {\tt README.txt} e seguindo algumas instruções sugeridas pelo arquivo para melhor entendermos o funcionamento da PAPI. Nesse processo, instalamos a biblioteca, acessamos a documentação do projeto e realizamos alguns testes. O sistema operacional que utilizamos foi o \textbf{Ubuntu Linux}\footnote{http://ubuntu.com/}
+Iniciamos nosso trabalho baixando a biblioteca PAPI, lendo seu arquivo {\tt README.txt} e seguindo algumas instruções sugeridas pelo arquivo para melhor entendermos o funcionamento da PAPI. Nesse processo, instalamos a biblioteca, acessamos a documentação do projeto e realizamos alguns testes. O sistema operacional que utilizamos foi o \textbf{Ubuntu Linux}\footnote{http://ubuntu.com/}.
 
 Para compilar e instalar o PAPI, executamos:
 
@@ -35,11 +37,11 @@ $ su
 # make install
 \end{verbatim}
 
-Alguns dos exemplos disponívels no diretório {\tt utils/} do projeto foram bastante importantes para entendermos a forma como a biblioteca funciona. Em particular, o utilitário {\tt utils/clockres.c} nos ajudou a entender como usar as funções para cronometrar tempos de execução reais e virtuais das operações tanto em ciclos e microssegundos.
+Alguns dos exemplos disponívels no diretório {\tt utils/} do projeto foram bastante importantes para entendermos a forma como a biblioteca funciona. Em particular, o utilitário {\tt utils/clockres.c} nos ajudou a entender como usar as funções para cronometrar tempos de execução reais e virtuais das operações tanto em ciclos como em microssegundos.
 
 \subsection{Contando o tempo com o PAPI}
 
-Foram necessárias alterações muito pequenas para fazer o tempo ser cronometrado com o PAPI no lugar de {\tt gettimeofday()} nos arquivos {\tt teste1.c} e {\tt teste1\_ord.c}. Incluímos o cabeçalho {\tt papi.h} no código-fonte e a função {\tt get\_time()} foi modificada de sua versão original:
+Foram necessárias alterações muito pequenas para fazer o tempo ser cronometrado com o PAPI no lugar de {\tt gettimeofday()} nos arquivos {\tt teste1.c} e {\tt teste1\_ord.c}: incluímos o cabeçalho {\tt papi.h} no código-fonte e a função {\tt get\_time()} foi modificada de sua versão original
 
 \begin{verbatim}
 inline uint64_t get_time(void) {
@@ -49,7 +51,7 @@ inline uint64_t get_time(void) {
 }
 \end{verbatim}
 
-para:
+para
 
 \begin{verbatim}
 inline uint64_t get_time(void) { 
@@ -74,11 +76,12 @@ Time: 6495723 Count 500927
 
 \subsection{Hipóteses}
 
-Pequena introdução % TODO
+Com uma maior resolução, iniciamos diversos testes com base nos arquivos {\tt teste1-papi.c} e {\tt teste1\_ord-papi.c}, procurando entender o motivo de o primeiro programa ser aproximadamente 3 vezes mais lento que o segundo. Analisando os resultados, as circunstâncias dos códigos e nossos conhecimentos até o momento, chegamos à conclusão que a diferença no tempo de execução dos programas era dado pelo acesso à variável {\tt count}. Assim, chegamos a algumas hipóteses para o posicionamento da variável, relacionadas principalmente a registradores e caches, conforme segue.
 
 \subsubsection{Registradores}
 
 Um pouco sobre hipótese 1 % TODO
+
 
 \subsubsection{Contando número de falhas de cache}
 

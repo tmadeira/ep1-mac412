@@ -34,9 +34,9 @@ int main (int argc, char *argv[]) {
 	int i, count;
 	int *array = (int*) malloc (SIZE * sizeof(int));
 	uint64_t start, end;
-    int events[3] = { PAPI_L1_DCM, PAPI_L2_DCM, PAPI_L3_DCM };
-    long long misses[3];
-    int papilevels = 3;
+    int events[3] = { PAPI_L1_ICH, PAPI_L2_ICH, PAPI_L3_ICH };
+    long long hits[3];
+    int num_events = 3;
 
     if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
         exit(1);
@@ -50,9 +50,14 @@ int main (int argc, char *argv[]) {
 		array[i] = rand();
 
 	//Measurement
-    while (PAPI_start_counters(events, papilevels) != PAPI_OK) {
-        papilevels--;
+    while (PAPI_start_counters(events, num_events) != PAPI_OK && num_events) {
+        num_events--;
     }
+    if (num_events == 0) {
+        fprintf(stderr, "O PAPI nao conseguiu usar seus contadores de hardware\n");
+        exit(1);
+    }
+
 	start = get_time();
 	/*
 	 * É possível, em um vetor ordenado, fazer a contagem 
@@ -66,15 +71,16 @@ int main (int argc, char *argv[]) {
 			count++;
 	end = get_time();
 	uint64_t exec_time = diff_time(start, end);
-    if (PAPI_read_counters(misses, papilevels) != PAPI_OK) {
+    if (PAPI_read_counters(hits, num_events+1) != PAPI_OK) {
         fprintf(stderr, "Erro em PAPI_read_counters\n");
         exit(1);
     }
 
 	printf("Time: %" PRIu64 " Count %d\n",  exec_time, count);
-    for (i = 0; i < papilevels; i++) {
-        printf("Cache misses (L%d): %lld\n", i+1, misses[i]);
+    for (i = 0; i < num_events; i++) {
+        printf("Instruction cache hits (L%d): %lld\n", i+1, hits[i]);
     }
+    PAPI_stop_counters(hits, num_events);
 	free(array);
 	return 0;
 }
