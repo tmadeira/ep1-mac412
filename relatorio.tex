@@ -76,20 +76,32 @@ Time: 6495723 Count 500927
 
 \subsection{Hipóteses}
 
-Com uma maior resolução, iniciamos diversos testes com base nos arquivos {\tt teste1-papi.c} e {\tt teste1\_ord-papi.c}, procurando entender o motivo de o primeiro programa ser aproximadamente 3 vezes mais lento que o segundo. Analisando os resultados, as circunstâncias dos códigos e nossos conhecimentos até o momento, chegamos à conclusão que a diferença no tempo de execução dos programas era dado pelo acesso à variável {\tt count}. Assim, chegamos a algumas hipóteses para o posicionamento da variável, relacionadas principalmente a registradores e caches, conforme segue.
+Com uma maior resolução, iniciamos diversos testes com base nos arquivos {\tt teste1-papi.c} e {\tt teste1\_ord-papi.c}, procurando entender o motivo de o primeiro programa ser aproximadamente 3 vezes mais lento que o segundo.
 
-\subsubsection{Registradores}
+Analisando os resultados, as circunstâncias dos códigos e nossos conhecimentos até o momento, chegamos à conclusão que a diferença no tempo de execução dos programas era dado pelo acesso à variável {\tt count}. Assim, chegamos a algumas hipóteses para o posicionamento da variável relacionadas principalmente a caches, conforme segue.
 
-Um pouco sobre hipótese 1 % TODO
+\subsubsection{Número de falhas de cache}
 
+As chamadas da variável {\tt count} eram feitas de forma consecutiva na execução do arquivo {\tt teste1\_ord-papi.c}, enquanto no arquivo {\tt teste1-papi.c} eram feitas mais esparsamente. Isso nos levou a pensar que poderia haver diferença significativa no número de falhas de acesso à memória cache.
 
-\subsubsection{Contando número de falhas de cache}
+Usamos os eventos {\tt PAPI\_L1\_DCM}, {\tt PAPI\_L2\_DCM} e {\tt PAPI\_L3\_DCM} para contar o número de falhas de cache no PAPI. Porém, o número foi bastante próximo para {\tt teste1.c} e {\tt teste1\_ord.c}, de forma que tivemos que abandonar essa hipótese.
 
-Bastante sobre essa hipótese, com códigos que usamos para contar cache misses % TODO
+\subsubsection{Número de acertos de instruções de cache}
 
-\subsubsection{Outra hipótese}
+Olhando os outros eventos disponíveis na biblioteca PAPI, encontramos os eventos {\tt PAPI\_L1\_ICH}, {\tt PAPI\_L2\_ICH} e {\tt PAPI\_L3\_ICH} que, ao invés de medirem as falhas de cache, medem o número de acertos de cache (\emph{cache hits}).
 
-Outra hipótese vai aqui % TODO
+Esse contador revelou bastante diferença entre os programas {\tt teste1.c} e {\tt teste1\_ord.c}, como segue:
+
+\begin{verbatim}
+$ ./teste1-papi
+Time: 21758132 Count 500264
+Instruction cache hits (L1): 21480380
+$ ./teste1_ord-papi
+Time: 7742922 Count 500264
+Instruction cache hits (L1): 7745845
+\end{verbatim}
+
+Com isso, concluímos que de fato são necessários muito menos acessos ao cache quando o vetor está ordenado.
 
 \section{Parte 2}
 
